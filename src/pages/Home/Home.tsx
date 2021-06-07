@@ -1,11 +1,7 @@
 // import styles from "./Home.module.scss";
 
 function Home() {
-  return (
-    <div>
-      <h1 className={"text-xl"}>Hello World</h1>
-    </div>
-  );
+  return <h1>Hello World</h1>;
 }
 
 export default Home;

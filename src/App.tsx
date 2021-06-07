@@ -1,16 +1,17 @@
 import "./App.scss";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Suspense, lazy } from "react";
 
-import Home from "./pages/Home/Home";
+const Home = lazy(() => import("./pages/Home/Home"));
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route exact path={"/"}>
-          <Home />
-        </Route>
-      </Switch>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Switch>
+          <Route exact path={"/"} component={Home} />
+        </Switch>
+      </Suspense>
     </Router>
   );
 }
