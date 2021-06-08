@@ -1,7 +1,9 @@
 // import styles from "./Home.module.scss";
 
+import CodeEditor from "../../components/CodeEditor/CodeEditor";
+
 function Home() {
-  return <h1>Hello World</h1>;
+  return <CodeEditor />;
 }
 
 export default Home;
