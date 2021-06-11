@@ -1,6 +1,12 @@
+import { useContext } from "react";
+import SocketContext from "../../../contexts/SocketContext";
 import styles from "./styles.module.scss";
 
 function SideBarFiles() {
+  const socket = useContext(SocketContext);
+
+  console.log(socket);
+
   return (
     <>
       <div
