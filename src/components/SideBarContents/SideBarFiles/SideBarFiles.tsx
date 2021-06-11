@@ -21,15 +21,6 @@ function SideBarFiles() {
     });
 
     socket.emit("fileInput", JSON.stringify({ type: "ls" }));
-    // socket.emit(
-    //   "fileInput",
-    //   JSON.stringify({ type: "touch", file: "index.html" })
-    // );
-    // socket.emit("fileInput", JSON.stringify({ type: "touch", file: "app.js" }));
-    // socket.emit(
-    //   "fileInput",
-    //   JSON.stringify({ type: "touch", file: "syles.scss" })
-    // );
   }, [socket]);
 
   return (

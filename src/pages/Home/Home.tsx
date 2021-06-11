@@ -1,15 +1,22 @@
 import styles from "./styles.module.scss";
 
-import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
+import {
+  ReflexContainer,
+  ReflexSplitter,
+  ReflexElement,
+  HandlerProps,
+} from "react-reflex";
 import SideBar from "../../components/SideBar/SideBar";
 
 import { io, Socket } from "socket.io-client";
 import { useEffect } from "react";
 import { useState } from "react";
 import SocketContext from "../../contexts/SocketContext";
+import Terminal from "../../components/Terminal/Terminal";
 
 function Home() {
   const [socket, setSocket] = useState<Socket>(io());
+  const [terminalIsResizing, setTerminalIsResizing] = useState<HandlerProps>();
 
   useEffect(() => {
     // call api to create new container
@@ -37,19 +44,24 @@ function Home() {
                   <ReflexSplitter />
 
                   <ReflexElement
+                    className={styles.terminalContainer}
                     minSize={80}
                     maxSize={730}
                     flex={0.2}
-                  ></ReflexElement>
+                    onResize={(event) => {
+                      setTerminalIsResizing(event);
+                    }}
+                  >
+                    <Terminal
+                      terminalResizeEvent={terminalIsResizing}
+                    ></Terminal>
+                  </ReflexElement>
                 </ReflexContainer>
               </ReflexElement>
 
               <ReflexSplitter />
 
-              <ReflexElement flex={0.5}>
-                {/* Terminal */}
-                {/* TODO: background-color: #16191d; */}
-              </ReflexElement>
+              <ReflexElement flex={0.5}></ReflexElement>
             </ReflexContainer>
           </SocketContext.Provider>
         </ReflexElement>
