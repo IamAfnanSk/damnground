@@ -12,10 +12,10 @@
 }
 
 body .reflex-container.horizontal > .reflex-splitter {
-  @apply bg-gray-500 border-0 h-1 w-full transition ease-linear duration-100;
+  @apply bg-gray-700 border-0 h-0.5 w-full transition ease-linear duration-100;
 }
 body .reflex-container.vertical > .reflex-splitter {
-  @apply bg-gray-500 border-0 h-full w-1 transition ease-linear duration-100;
+  @apply bg-gray-700 border-0 h-full w-0.5 transition ease-linear duration-100;
 }
 
 body .reflex-container.horizontal > .reflex-splitter.active,

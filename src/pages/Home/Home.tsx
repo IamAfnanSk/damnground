@@ -4,41 +4,41 @@ import styles from "./styles.module.scss";
 
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import SideBar from "../../components/SideBar/SideBar";
-import CondingSectionContextProvider from "../../store/CodingSectionContext/CodingSectionContext";
 
 function Home() {
   return (
     <div className={styles.windowContainer}>
       <ReflexContainer orientation="horizontal">
-        <CondingSectionContextProvider>
-          <ReflexElement>
-            <ReflexContainer orientation="vertical">
-              <ReflexElement minSize={50} flex={0.28}>
-                <SideBar />
-              </ReflexElement>
+        <ReflexElement>
+          <ReflexContainer orientation="vertical">
+            <ReflexElement minSize={50} flex={0.28}>
+              <SideBar />
+            </ReflexElement>
 
-              <ReflexSplitter />
+            <ReflexSplitter />
 
-              <ReflexElement flex={0.65}>
-                <ReflexContainer orientation="horizontal">
-                  <ReflexElement flex={0.8}></ReflexElement>
+            <ReflexElement flex={0.65}>
+              <ReflexContainer orientation="horizontal">
+                <ReflexElement flex={0.8}></ReflexElement>
 
-                  <ReflexSplitter />
+                <ReflexSplitter />
 
-                  <ReflexElement
-                    minSize={80}
-                    maxSize={730}
-                    flex={0.2}
-                  ></ReflexElement>
-                </ReflexContainer>
-              </ReflexElement>
+                <ReflexElement
+                  minSize={80}
+                  maxSize={730}
+                  flex={0.2}
+                ></ReflexElement>
+              </ReflexContainer>
+            </ReflexElement>
 
-              <ReflexSplitter />
+            <ReflexSplitter />
 
-              <ReflexElement flex={0.5}></ReflexElement>
-            </ReflexContainer>
-          </ReflexElement>
-        </CondingSectionContextProvider>
+            <ReflexElement flex={0.5}>
+              {/* Terminal */}
+              {/* TODO: background-color: #16191d; */}
+            </ReflexElement>
+          </ReflexContainer>
+        </ReflexElement>
 
         <ReflexSplitter />
 
