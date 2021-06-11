@@ -4,19 +4,26 @@ import SideBarOptions from "../SideBarOptions/SideBarOptions";
 
 import styles from "./styles.module.scss";
 
-const SideBar = () => {
+const SideBar = (props: any) => {
   const [option, setOption] = useState("files");
 
   const onOptionChange = (option: string) => {
     setOption(option);
   };
 
+  function changeCurrentFile(data: any) {
+    props.changeCurrentFile(data);
+  }
+
   return (
     <>
       <div className={styles.container}>
         <SideBarOptions onOptionChange={onOptionChange} option={option} />
         <div className="flex-1">
-          <SideBarContent option={option} />
+          <SideBarContent
+            changeCurrentFile={changeCurrentFile}
+            option={option}
+          />
         </div>
       </div>
     </>

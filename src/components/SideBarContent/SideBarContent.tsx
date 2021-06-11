@@ -5,11 +5,17 @@ import SideBarFiles from "../SideBarContents/SideBarFiles/SideBarFiles";
 import styles from "./styles.module.scss";
 
 function SideBarContent(props: ISideBarContentProps) {
+  function changeCurrentFile(data: any) {
+    props.changeCurrentFile(data);
+  }
+
   return (
     <>
       <div className={styles.container}>
         {props.option === "about" && <SideBarAbout />}
-        {props.option === "files" && <SideBarFiles />}
+        {props.option === "files" && (
+          <SideBarFiles changeCurrentFile={changeCurrentFile} />
+        )}
       </div>
     </>
   );

@@ -1,3 +1,7 @@
 .container {
   background-color: #1f2428;
 }
+
+.file:not(:first-child) {
+  @apply mt-1;
+}

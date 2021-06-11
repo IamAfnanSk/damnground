@@ -9,9 +9,11 @@ import { useState } from "react";
 import SocketContext from "../../contexts/SocketContext";
 import Terminal from "../../components/Terminal/Terminal";
 import CodeOutput from "../../components/CodeOutput/CodeOutput";
+import CodeEditor from "../../components/CodeEditor/CodeEditor";
 
 function Home() {
   const [socket, setSocket] = useState<Socket>(io());
+  const [currentFile, setCurrentFile] = useState("index.html");
 
   useEffect(() => {
     // call api to create new container
@@ -20,6 +22,10 @@ function Home() {
     setSocket(socket);
   }, []);
 
+  function changeCurrentFile(data: any) {
+    setCurrentFile(data.name);
+  }
+
   return (
     <div className={styles.windowContainer}>
       <ReflexContainer orientation="horizontal">
@@ -27,14 +33,16 @@ function Home() {
           <SocketContext.Provider value={socket}>
             <ReflexContainer orientation="vertical">
               <ReflexElement minSize={50} flex={0.28}>
-                <SideBar />
+                <SideBar changeCurrentFile={changeCurrentFile} />
               </ReflexElement>
 
               <ReflexSplitter />
 
               <ReflexElement flex={0.65}>
                 <ReflexContainer orientation="horizontal">
-                  <ReflexElement flex={0.8}></ReflexElement>
+                  <ReflexElement flex={0.8}>
+                    <CodeEditor currentFile={currentFile}></CodeEditor>
+                  </ReflexElement>
 
                   <ReflexSplitter />
 
@@ -61,7 +69,30 @@ function Home() {
 
         <ReflexSplitter />
 
-        <ReflexElement maxSize={60} minSize={60}></ReflexElement>
+        <ReflexElement maxSize={60} minSize={60}>
+          <div className="px-6 py-1 flex items-center justify-between">
+            <div>
+              <p>
+                After so much backend work, I had no time to fix memory leaks
+                and improvments 😞 but <b>something is better than nothing</b>{" "}
+                👍
+              </p>
+              <p>
+                😍
+                <b> Features Implemented:</b> Multiple resizable windows,
+                Textmate grammers, Real CLI, Multi file monaco editor, Real
+                output, File management, File listing, File saving to DB, etc.
+              </p>
+            </div>
+            <div>
+              <img
+                src="/assets/logo.jpg"
+                className="w-10"
+                alt="Afnan Shaikh's Logo"
+              />
+            </div>
+          </div>
+        </ReflexElement>
       </ReflexContainer>
     </div>
   );

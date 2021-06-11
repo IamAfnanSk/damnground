@@ -6,7 +6,7 @@ import SocketContext from "../../../contexts/SocketContext";
 import { IFileFolders } from "../../../types/IFileFolders";
 import styles from "./styles.module.scss";
 
-function SideBarFiles() {
+function SideBarFiles(props: any) {
   const socket = useContext(SocketContext);
   const [filesAndFolders, setFilesAndFolders] = useState<IFileFolders[]>([]);
 
@@ -35,7 +35,7 @@ function SideBarFiles() {
         <div className="codicon codicon-new-file cursor-pointer"></div>
       </div>
 
-      <div className="py-1 px-3">
+      <div className="py-2 px-4">
         {filesAndFolders.map((element) => {
           const splittedName = element.name.split(".");
           const extension = splittedName[splittedName.length - 1];
@@ -56,14 +56,40 @@ function SideBarFiles() {
             );
           }
 
+          function changeCurrentFile() {
+            props.changeCurrentFile(element);
+          }
+
+          function renameFile() {
+            // props.changeCurrentFile(element);
+          }
+
           return (
             <div
-              className="flex items-center cursor-pointer"
+              className={
+                styles.file +
+                " flex items-center cursor-pointer justify-between"
+              }
               key={element.name}
-              onClick={deleteFile}
             >
-              <img src={imageSrc} className="w-4" alt="file icon" />
-              <p className="ml-2">{element.name}</p>
+              <div
+                className="flex items-center flex-1"
+                onClick={changeCurrentFile}
+              >
+                <img src={imageSrc} className="w-4" alt="file icon" />
+                <p className="ml-1.5 text-sm">{element.name}</p>
+              </div>
+
+              <div>
+                <div
+                  onClick={renameFile}
+                  className="codicon codicon-edit"
+                ></div>
+                <div
+                  onClick={deleteFile}
+                  className="codicon codicon-trash ml-2"
+                ></div>
+              </div>
             </div>
           );
         })}

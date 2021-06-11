@@ -1,7 +1,16 @@
+import { useContext } from "react";
 import { useRef } from "react";
+import SocketContext from "../../contexts/SocketContext";
 
 function CodeOutput(props: any) {
   const codeOutputRef = useRef<HTMLIFrameElement>(null);
+  const socket = useContext(SocketContext);
+
+  socket.on("fileOutput", () => {
+    if (codeOutputRef.current) {
+      codeOutputRef.current.src = props.src;
+    }
+  });
 
   return (
     <div className="h-full w-full bg-white">
