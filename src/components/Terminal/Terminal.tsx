@@ -1,13 +1,12 @@
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import SocketContext from "../../contexts/SocketContext";
-import { ITerminalProps } from "../../types/ITerminalProps";
 
 import styles from "./styles.module.scss";
 
-function Terminal(props: ITerminalProps) {
+function Terminal() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const terminal = useMemo(() => new XTerminal({ rows: 10 }), []);
+  const terminal = new XTerminal({ rows: 10 });
 
   const socket = useContext(SocketContext);
 
@@ -17,25 +16,17 @@ function Terminal(props: ITerminalProps) {
   });
 
   useEffect(() => {
-    if (props.terminalResizeEvent) {
-      const element = props.terminalResizeEvent.domElement as Element;
-      const rows = Math.floor(element.clientHeight / 18);
+    socket.on("output", (data) => {
+      terminal.write(data);
+    });
 
-      terminal.resize(50, rows);
-    }
-  }, [props.terminalResizeEvent, terminal]);
-
-  useEffect(() => {
     terminal.open(terminalDivRef.current!);
 
     terminal.onData((data) => {
       socket.emit("input", data);
     });
-
-    socket.on("output", (data) => {
-      terminal.write(data);
-    });
-  }, [terminal, socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <div className={styles.terminal} ref={terminalDivRef}></div>;
 }

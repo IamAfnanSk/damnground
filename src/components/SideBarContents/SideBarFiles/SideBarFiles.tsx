@@ -21,7 +21,8 @@ function SideBarFiles() {
     });
 
     socket.emit("fileInput", JSON.stringify({ type: "ls" }));
-  }, [socket]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

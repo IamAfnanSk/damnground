@@ -1,11 +1,6 @@
 import styles from "./styles.module.scss";
 
-import {
-  ReflexContainer,
-  ReflexSplitter,
-  ReflexElement,
-  HandlerProps,
-} from "react-reflex";
+import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import SideBar from "../../components/SideBar/SideBar";
 
 import { io, Socket } from "socket.io-client";
@@ -13,10 +8,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import SocketContext from "../../contexts/SocketContext";
 import Terminal from "../../components/Terminal/Terminal";
+import CodeOutput from "../../components/CodeOutput/CodeOutput";
 
 function Home() {
   const [socket, setSocket] = useState<Socket>(io());
-  const [terminalIsResizing, setTerminalIsResizing] = useState<HandlerProps>();
 
   useEffect(() => {
     // call api to create new container
@@ -48,20 +43,18 @@ function Home() {
                     minSize={80}
                     maxSize={730}
                     flex={0.2}
-                    onResize={(event) => {
-                      setTerminalIsResizing(event);
-                    }}
                   >
-                    <Terminal
-                      terminalResizeEvent={terminalIsResizing}
-                    ></Terminal>
+                    <Terminal></Terminal>
                   </ReflexElement>
                 </ReflexContainer>
               </ReflexElement>
 
               <ReflexSplitter />
 
-              <ReflexElement flex={0.5}></ReflexElement>
+              <ReflexElement flex={0.5}>
+                {/* TODO: Pass src */}
+                <CodeOutput src="http://app.damner.dns.codedamn.afnanshaikh.com"></CodeOutput>
+              </ReflexElement>
             </ReflexContainer>
           </SocketContext.Provider>
         </ReflexElement>
