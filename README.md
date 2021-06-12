@@ -1,70 +1,57 @@
-# Getting Started with Create React App
+<div align="center">
+  <img width="150px" src="https://yt3.ggpht.com/ytc/AAUvwnjJzxp8COuChc2Iccn41G1sBr9DRbFpR3jeo9shvw=s900-c-k-c0x00ffffff-no-rj"/>
+    <h1>Damnground</h1>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+  <p>An online code playground for fun.</p>
+</div>
 
-## Available Scripts
+# Damnground
 
-In the project directory, you can run:
+### The frontend codebase of the damn project
 
-### `npm start`
+Damnground is the front end part of the project which uses [damnbasher](https://github.com/IamAfnanSk/damnbasher) and [damnbackend](https://github.com/IamAfnanSk/damnbackend) and basically this is all the font end.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- A code editor on frontend
+- A terminal on frontend
+- Multiple resizable windows
+- Multiple file support in monaco editor
+- Code files are saved and restored when someone refreshes the page (uses backend database to persist user code)
+- A working terminal
 
-### `npm test`
+## Bonus features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Textmate grammers support
+- Real CLI connected to real server
+- File manager
+- Complete sync
 
-### `npm run build`
+## Tech
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Damnbasher uses these tech to power itself:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- React - For frontend
+- Xterm.js - For terminal
+- Monaco editor - Text editor
+- Typescript - For everything
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation
 
-### `npm run eject`
+Install the dependencies and devDependencies and start the server.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```sh
+cd damnground
+npm i
+node run start
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+For production environments...
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```sh
+npm run build
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Author
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Afnan Shaikh
