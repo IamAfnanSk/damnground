@@ -32,7 +32,8 @@
     "xterm": "^4.12.0"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "node server.js",
+    "start:dev": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
