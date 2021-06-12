@@ -4,7 +4,7 @@ function Footer() {
       <div>
         <p>
           Because implimenting too many features other than asked ones, I had no
-          time to optimize 😞 but <b>something is better than nothing</b> 👍
+          time to optimize but atleast <b>i FINISHED it</b>🤣
         </p>
         <p>
           😍

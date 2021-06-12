@@ -97,6 +97,34 @@ const SideBar = (props: ISideBarProps) => {
                   output. Complete the challenges mentioned and proceed forward
                   with the next ones!
                 </p>
+                <p className="my-3 text-2xl">
+                  Made by <b>Afnan Shaikh</b>
+                </p>
+
+                <a
+                  href="https://twitter.com/IamAfnanSk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-green-300 block"
+                >
+                  @IamAfnanSk : Twitter
+                </a>
+                <a
+                  href="https://www.instagram.com/iamafnansk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-green-300 block"
+                >
+                  @IamAfnanSk : Instagram
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/iamafnansk"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-green-300 block"
+                >
+                  @IamAfnanSk : LinkedIn
+                </a>
               </div>
             )}
 
