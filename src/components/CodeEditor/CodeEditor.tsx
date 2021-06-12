@@ -597,6 +597,8 @@ function CodeEditor(props: ICodeEditorProps) {
 
       props.updateFile(value || "");
     }
+
+    props.refreshOutput();
   };
 
   return (

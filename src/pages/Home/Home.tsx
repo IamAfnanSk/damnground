@@ -14,7 +14,7 @@ import { IFilesAndFolders } from "../../interfaces/IFilesAndFolders";
 
 function Home() {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [appDomain, setAppDomain] = useState<string | null>(null);
+  const [appDomain, setAppDomain] = useState<string>();
   const [filesAndFolders, setFilesAndFolders] = useState<IFilesAndFolders[]>(
     []
   );
@@ -22,6 +22,7 @@ function Home() {
   const [currentFile, setCurrentFile] = useState<string>("");
   const [currentFileContent, setCurrentFileContent] = useState<string>("");
   const [currentFileLanguage, setCurrentFileLanguage] = useState<string>("");
+  const [iFrameKey, setIFrameKey] = useState(Math.random());
 
   useEffect(() => {
     const baseSocket = io(config.baseSocketURI);
@@ -181,6 +182,10 @@ function Home() {
     }
   }
 
+  function refreshOutput() {
+    setIFrameKey(Math.random());
+  }
+
   function addFile(file: any) {
     const fAndFolders = filesAndFolders;
     fAndFolders.push(file);
@@ -206,6 +211,7 @@ function Home() {
                 <ReflexElement flex={0.8}>
                   {currentFile && (
                     <CodeEditor
+                      refreshOutput={refreshOutput}
                       updateFile={updateFile}
                       socket={socket}
                       currentFileContent={currentFileContent}
@@ -221,13 +227,16 @@ function Home() {
                   maxSize={730}
                   flex={0.2}
                 >
-                  <Terminal socket={socket}></Terminal>
+                  <Terminal
+                    refreshOutput={refreshOutput}
+                    socket={socket}
+                  ></Terminal>
                 </ReflexElement>
               </ReflexContainer>
             </ReflexElement>
             <ReflexSplitter />
             <ReflexElement flex={0.5}>
-              <CodeOutput src={appDomain}></CodeOutput>
+              <CodeOutput iFrameKey={iFrameKey} src={appDomain}></CodeOutput>
             </ReflexElement>
           </ReflexContainer>
         </ReflexElement>

@@ -6,4 +6,5 @@ export interface ICodeEditorProps {
   currentFileLanguage: string;
   socket: Socket | null;
   updateFile: any;
+  refreshOutput: any;
 }

@@ -16,14 +16,26 @@ function Terminal(props: ITerminalProps) {
     foreground: "#F5F8FA",
   });
 
+  let timer: any;
+
+  terminal.onData(() => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(() => {
+      props.refreshOutput();
+    }, 5000);
+  });
+
   useEffect(() => {
     const socket = props.socket;
 
     if (socket) {
       terminal.open(terminalDivRef.current!);
+
       socket.on("output", (data) => {
         terminal.write(data);
-        terminal.focus();
       });
 
       terminal.onData((data) => {

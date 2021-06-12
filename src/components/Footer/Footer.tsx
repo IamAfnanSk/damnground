@@ -3,8 +3,8 @@ function Footer() {
     <div className="px-6 py-1 flex items-center justify-between">
       <div>
         <p>
-          After so much backend work, I had no time to fix memory leaks and
-          improvments 😞 but <b>something is better than nothing</b> 👍
+          Because implimenting too many features other than asked ones, I had no
+          time to optimize 😞 but <b>something is better than nothing</b> 👍
         </p>
         <p>
           😍
