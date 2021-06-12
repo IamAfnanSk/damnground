@@ -1,5 +1,5 @@
 {
-  "name": "playground",
+  "name": "damnground",
   "version": "0.2.0",
   "private": true,
   "dependencies": {
@@ -62,14 +62,9 @@
     "postcss": "^7.0.35",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.4"
   },
-  "heroku-postbuild": "npm run build",
   "author": {
     "name": "Afnan Shaikh",
     "email": "business@afnan.dev",
     "url": "https://afnan.dev"
-  },
-  "engines": {
-    "node": "14.17.0",
-    "npm": "6.14.13"
   }
 }
