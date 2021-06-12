@@ -43,7 +43,7 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 cd damnground
 npm i
-node run start
+node run start:dev
 ```
 
 For production environments...
