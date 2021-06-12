@@ -41,64 +41,6 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    function saveSnippetToserverAndSetIdToLocalstorage() {
-      socket!.on("fileOutputWithContent", (data: string) => {
-        const parsed = JSON.parse(data);
-        const fAndFolders = parsed.filesAndFolders;
-
-        setFilesAndFolders(fAndFolders);
-
-        fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
-          method: "post",
-          body: JSON.stringify({
-            files: fAndFolders,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            localStorage.setItem("snippetId", data.snippetId);
-          })
-          .catch((error) => {});
-      });
-
-      socket!.emit("fileInput", JSON.stringify({ request: "lswithcontent" }));
-    }
-
-    function getAndUpdateFilesAndFolders(snippetId: string) {
-      fetch(`${config.baseApiURI}/api/v1/snippet/get`, {
-        method: "post",
-        body: JSON.stringify({
-          snippetId,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then(({ data }) => {
-          const files = data.files;
-
-          files.forEach((file: any) => {
-            if (file.type === "file") {
-              socket!.emit(
-                "fileInput",
-                JSON.stringify({
-                  name: file.name,
-                  content: file.content,
-                  request: "update",
-                })
-              );
-            }
-          });
-
-          setFilesAndFolders(files);
-        })
-        .catch((error) => {});
-    }
-
     if (socket) {
       const snippetIdLocal = localStorage.getItem("snippetId");
 
@@ -138,6 +80,42 @@ function Home() {
           })
         );
       });
+    }
+
+    function saveSnippetToserverAndSetIdToLocalstorage() {
+      socket!.emit("fileInput", JSON.stringify({ request: "lswithcontent" }));
+    }
+
+    function getAndUpdateFilesAndFolders(snippetId: string) {
+      fetch(`${config.baseApiURI}/api/v1/snippet/get`, {
+        method: "post",
+        body: JSON.stringify({
+          snippetId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then(({ data }) => {
+          const files = data.files;
+
+          files.forEach((file: any) => {
+            if (file.type === "file") {
+              socket!.emit(
+                "fileInput",
+                JSON.stringify({
+                  name: file.name,
+                  content: file.content,
+                  request: "update",
+                })
+              );
+            }
+          });
+
+          setFilesAndFolders(files);
+        })
+        .catch((error) => {});
     }
   }, [socket]);
 
