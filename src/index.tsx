@@ -6,7 +6,7 @@ import App from "./App";
 import { loadWASM } from "onigasm";
 
 (async () => {
-  await loadWASM("https://cdn.jsdelivr.net/npm/onigasm@2.2.5/lib/onigasm.wasm");
+  await loadWASM("/assets/onigasm.wasm");
 
   ReactDOM.render(
     <React.StrictMode>

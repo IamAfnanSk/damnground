@@ -137,7 +137,7 @@ const SideBar = (props: ISideBarProps) => {
                         <input
                           ref={addFileInputRef}
                           type="text"
-                          className="text-sm p-0 bg-transparent w-full"
+                          className="p-0 bg-transparent w-full"
                         />
                         {/* <p className="ml-1.5 text-sm"></p> */}
                       </div>
@@ -168,7 +168,7 @@ const SideBar = (props: ISideBarProps) => {
                               className="h-4"
                               alt="file icon"
                             />
-                            <p className="ml-1.5 text-sm">{element.name}</p>
+                            <p className="ml-1.5">{element.name}</p>
                           </div>
                         </div>
                       );
@@ -197,8 +197,8 @@ const SideBar = (props: ISideBarProps) => {
                             props.updateCurrentFile(element.name);
                           }}
                         >
-                          <img src={imageSrc} className="w-4" alt="file icon" />
-                          <p className="ml-1.5 text-sm">{element.name}</p>
+                          <img src={imageSrc} className="w-5" alt="file icon" />
+                          <p className="ml-1.5">{element.name}</p>
                         </div>
 
                         <div>
