@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { ITerminalProps } from "../../interfaces/ITerminalProps";
@@ -6,10 +7,13 @@ import styles from "./styles.module.scss";
 
 function Terminal(props: ITerminalProps) {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const terminal = new XTerminal({
-    rows: 10,
-    cursorBlink: true,
-  });
+
+  const [terminal] = useState(
+    new XTerminal({
+      rows: props.editorRows,
+      cursorBlink: true,
+    })
+  );
 
   terminal.setOption("theme", {
     background: "#16191d",
@@ -19,6 +23,11 @@ function Terminal(props: ITerminalProps) {
   terminal.onData(() => {
     props.refreshOutput(true);
   });
+
+  useEffect(() => {
+    terminal.resize(60, props.editorRows);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.editorRows]);
 
   useEffect(() => {
     const socket = props.socket;

@@ -24,6 +24,7 @@ function Home() {
   const [currentFileContent, setCurrentFileContent] = useState<string>("");
   const [currentFileLanguage, setCurrentFileLanguage] = useState<string>("");
   const [iFrameKey, setIFrameKey] = useState(Math.random());
+  const [editorRows, setEditorRows] = useState(10);
 
   const history = useHistory();
   const params: { id: string } = useParams();
@@ -221,8 +222,14 @@ function Home() {
                   minSize={80}
                   maxSize={730}
                   flex={0.2}
+                  onResize={(event) => {
+                    const el = event.domElement as Element;
+                    const rows = Math.floor(el.clientHeight / 18);
+                    setEditorRows(rows);
+                  }}
                 >
                   <Terminal
+                    editorRows={editorRows}
                     refreshOutput={refreshOutput}
                     socket={socket}
                   ></Terminal>
