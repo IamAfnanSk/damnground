@@ -3,6 +3,7 @@ import { Registry } from "monaco-textmate";
 import { useRef } from "react";
 import { wireTmGrammars } from "monaco-editor-textmate";
 import { ICodeEditorProps } from "../../interfaces/ICodeEditorProps";
+import { useEffect } from "react";
 
 function CodeEditor(props: ICodeEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
@@ -10,20 +11,45 @@ function CodeEditor(props: ICodeEditorProps) {
 
   const registry = new Registry({
     async getGrammarDefinition(scopeName) {
-      console.log(scopeName);
-
-      if (scopeName === "source.ts" || scopeName === "source.js") {
+      if (scopeName === "source.ts") {
         return {
-          format: "plist",
+          format: "json",
           content: await (
-            await fetch("/languages/TypeScript.tmLanguage")
+            await fetch("/languages/TypeScript.tmLanguage.json")
           ).text(),
         };
       }
 
+      if (scopeName === "source.js") {
+        return {
+          format: "json",
+          content: await (
+            await fetch("/languages/javaScript.tmLanguage.json")
+          ).text(),
+        };
+      }
+
+      if (scopeName === "source.html" || scopeName === "text.html.basic") {
+        return {
+          format: "json",
+          content: await (
+            await fetch("/languages/html.tmLanguage.json")
+          ).text(),
+        };
+      }
+
+      if (scopeName === "source.css") {
+        return {
+          format: "json",
+          content: await (await fetch("/languages/css.tmLanguage.json")).text(),
+        };
+      }
+
       return {
-        format: "plist",
-        content: await (await fetch("/languages/TypeScript.tmLanguage")).text(),
+        format: "json",
+        content: await (
+          await fetch("/languages/TypeScript.tmLanguage.json")
+        ).text(),
       };
     },
   });
@@ -524,6 +550,31 @@ function CodeEditor(props: ICodeEditorProps) {
     editor._themeService.setTheme("vs-code-theme-converted");
   };
 
+  useEffect(() => {
+    (async () => {
+      if (monacoRef.current && registry && editorRef.current) {
+        const grammars = new Map();
+
+        monacoRef.current.languages.register({ id: "javascript" });
+        monacoRef.current.languages.register({ id: "typescript" });
+        monacoRef.current.languages.register({ id: "html" });
+        monacoRef.current.languages.register({ id: "css" });
+
+        grammars.set("javascript", "source.js");
+        grammars.set("typescript", "source.ts");
+        grammars.set("html", "source.html");
+        grammars.set("css", "source.css");
+        await wireTmGrammars(
+          monacoRef.current,
+          registry,
+          grammars,
+          editorRef.current
+        );
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.currentFileLanguage, props.currentFile]);
+
   const editorOnMount = (editor: any, monaco: Monaco) => {
     monacoRef.current = monaco;
     editorRef.current = editor;
@@ -531,7 +582,7 @@ function CodeEditor(props: ICodeEditorProps) {
     liftOff(editorRef.current, monacoRef.current);
   };
 
-  const editorOnChange = (value: string | undefined, event: any) => {
+  const editorOnChange = (value: string | undefined) => {
     if (props.socket) {
       const socket = props.socket;
 
@@ -540,7 +591,7 @@ function CodeEditor(props: ICodeEditorProps) {
         JSON.stringify({
           request: "update",
           name: props.currentFile,
-          content: value || "blank_file",
+          content: value,
         })
       );
 
@@ -558,6 +609,7 @@ function CodeEditor(props: ICodeEditorProps) {
       path={props.currentFile}
       value={props.currentFileContent}
       language={props.currentFileLanguage}
+      defaultLanguage={props.currentFileLanguage}
     />
   );
 }

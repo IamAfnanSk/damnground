@@ -60,7 +60,7 @@ function Home() {
           .then((data) => {
             localStorage.setItem("snippetId", data.snippetId);
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {});
       });
 
       socket!.emit("fileInput", JSON.stringify({ request: "lswithcontent" }));
@@ -95,7 +95,7 @@ function Home() {
 
           setFilesAndFolders(files);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {});
     }
 
     if (socket) {
@@ -108,8 +108,6 @@ function Home() {
       }
 
       socket.on("fileOutputWithContent", (data) => {
-        console.log(data);
-
         const parsed = JSON.parse(data);
         const fAndFolders = parsed.filesAndFolders;
 
@@ -128,7 +126,7 @@ function Home() {
           .then((data) => {
             localStorage.setItem("snippetId", data.snippetId);
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {});
       });
 
       socket.on("fileOutput", () => {
