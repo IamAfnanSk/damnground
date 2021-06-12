@@ -16,16 +16,8 @@ function Terminal(props: ITerminalProps) {
     foreground: "#F5F8FA",
   });
 
-  let timer: any;
-
   terminal.onData(() => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(() => {
-      props.refreshOutput();
-    }, 5000);
+    props.refreshOutput(true);
   });
 
   useEffect(() => {

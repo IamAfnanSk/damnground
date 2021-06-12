@@ -10,6 +10,7 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
           <Route exact path={"/"} component={Home} />
+          <Route exact path={"/:id"} component={Home} />
         </Switch>
       </Suspense>
     </Router>

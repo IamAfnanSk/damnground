@@ -11,6 +11,7 @@ import CodeOutput from "../../components/CodeOutput/CodeOutput";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
 import Footer from "../../components/Footer/Footer";
 import { IFilesAndFolders } from "../../interfaces/IFilesAndFolders";
+import { useHistory, useParams } from "react-router-dom";
 
 function Home() {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -23,6 +24,11 @@ function Home() {
   const [currentFileContent, setCurrentFileContent] = useState<string>("");
   const [currentFileLanguage, setCurrentFileLanguage] = useState<string>("");
   const [iFrameKey, setIFrameKey] = useState(Math.random());
+
+  const history = useHistory();
+  const params: { id: string } = useParams();
+
+  let timer: any;
 
   useEffect(() => {
     const baseSocket = io(config.baseSocketURI);
@@ -42,7 +48,7 @@ function Home() {
 
   useEffect(() => {
     if (socket) {
-      const snippetIdLocal = localStorage.getItem("snippetId");
+      const snippetIdLocal = params.id;
 
       if (snippetIdLocal) {
         getAndUpdateFilesAndFolders(snippetIdLocal);
@@ -67,7 +73,7 @@ function Home() {
         })
           .then((res) => res.json())
           .then((data) => {
-            localStorage.setItem("snippetId", data.snippetId);
+            history.push(`/${data.snippetId}`);
           })
           .catch((error) => {});
       });
@@ -160,8 +166,18 @@ function Home() {
     }
   }
 
-  function refreshOutput() {
-    setIFrameKey(Math.random());
+  function refreshOutput(delay: boolean = false) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    if (delay) {
+      timer = setTimeout(() => {
+        setIFrameKey(Math.random());
+      }, 5000);
+    } else {
+      setIFrameKey(Math.random());
+    }
   }
 
   function addFile(file: any) {

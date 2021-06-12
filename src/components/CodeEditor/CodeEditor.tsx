@@ -9,6 +9,8 @@ function CodeEditor(props: ICodeEditorProps) {
   const monacoRef = useRef<Monaco | null>(null);
   const editorRef = useRef<any | null>(null);
 
+  let timer: any;
+
   const registry = new Registry({
     async getGrammarDefinition(scopeName) {
       if (scopeName === "source.ts") {
@@ -67,7 +69,7 @@ function CodeEditor(props: ICodeEditorProps) {
     grammars.set("html", "source.html");
     grammars.set("css", "source.css");
 
-    monaco.editor.defineTheme("vs-code-theme-converted", {
+    monaco.editor.defineTheme("tm-compatible-theme", {
       inherit: true,
       base: "vs-dark",
       colors: {
@@ -547,7 +549,7 @@ function CodeEditor(props: ICodeEditorProps) {
     setTimeout(async () => {
       await wireTmGrammars(monaco, registry, grammars, editor);
     }, 11);
-    editor._themeService.setTheme("vs-code-theme-converted");
+    editor._themeService.setTheme("tm-compatible-theme");
   };
 
   useEffect(() => {
@@ -583,22 +585,28 @@ function CodeEditor(props: ICodeEditorProps) {
   };
 
   const editorOnChange = (value: string | undefined) => {
-    if (props.socket) {
-      const socket = props.socket;
-
-      socket.emit(
-        "fileInput",
-        JSON.stringify({
-          request: "update",
-          name: props.currentFile,
-          content: value,
-        })
-      );
-
-      props.updateFile(value || "");
+    if (timer) {
+      clearTimeout(timer);
     }
 
-    props.refreshOutput();
+    timer = setTimeout(() => {
+      if (props.socket) {
+        const socket = props.socket;
+
+        socket.emit(
+          "fileInput",
+          JSON.stringify({
+            request: "update",
+            name: props.currentFile,
+            content: value,
+          })
+        );
+
+        props.updateFile(value || "");
+      }
+
+      props.refreshOutput(false);
+    }, 1000);
   };
 
   return (
@@ -607,7 +615,7 @@ function CodeEditor(props: ICodeEditorProps) {
       onMount={editorOnMount}
       onChange={editorOnChange}
       height="100%"
-      theme="vs-dark"
+      theme="tm-compatible-theme"
       path={props.currentFile}
       value={props.currentFileContent}
       language={props.currentFileLanguage}
