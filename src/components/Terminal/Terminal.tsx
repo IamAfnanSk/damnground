@@ -1,14 +1,15 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
-import SocketContext from "../../contexts/SocketContext";
+import { ITerminalProps } from "../../interfaces/ITerminalProps";
 
 import styles from "./styles.module.scss";
 
-function Terminal() {
+function Terminal(props: ITerminalProps) {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const terminal = new XTerminal({ rows: 10 });
-
-  const socket = useContext(SocketContext);
+  const terminal = new XTerminal({
+    rows: 10,
+    cursorBlink: true,
+  });
 
   terminal.setOption("theme", {
     background: "#16191d",
@@ -16,19 +17,27 @@ function Terminal() {
   });
 
   useEffect(() => {
-    socket.on("output", (data) => {
-      terminal.write(data);
-    });
+    const socket = props.socket;
 
-    terminal.open(terminalDivRef.current!);
+    if (socket) {
+      terminal.open(terminalDivRef.current!);
+      socket.on("output", (data) => {
+        terminal.write(data);
+        terminal.focus();
+      });
 
-    terminal.onData((data) => {
-      socket.emit("input", data);
-    });
+      terminal.onData((data) => {
+        socket!.emit("input", data);
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [props.socket]);
 
-  return <div className={styles.terminal} ref={terminalDivRef}></div>;
+  return (
+    <div className={styles.terminal} ref={terminalDivRef}>
+      {!props.socket && "Connecting to server PLEASE WAIT 😉  ..."}
+    </div>
+  );
 }
 
 export default Terminal;

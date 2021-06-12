@@ -1,32 +1,45 @@
-import Editor, { Monaco, useMonaco } from "@monaco-editor/react";
-import { ICodeEditorProps } from "../../types/ICodeEditorProps";
+import Editor, { Monaco } from "@monaco-editor/react";
 import { Registry } from "monaco-textmate";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { wireTmGrammars } from "monaco-editor-textmate";
-
-const registry = new Registry({
-  async getGrammarDefinition(scopeName) {
-    console.log(scopeName);
-
-    return {
-      format: "plist",
-      content: await (await fetch("/languages/TypeScript.tmLanguage")).text(),
-    };
-  },
-});
+import { ICodeEditorProps } from "../../interfaces/ICodeEditorProps";
 
 function CodeEditor(props: ICodeEditorProps) {
-  const editorRef = useRef<any | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
+  const editorRef = useRef<any | null>(null);
+
+  const registry = new Registry({
+    async getGrammarDefinition(scopeName) {
+      console.log(scopeName);
+
+      if (scopeName === "source.ts" || scopeName === "source.js") {
+        return {
+          format: "plist",
+          content: await (
+            await fetch("/languages/TypeScript.tmLanguage")
+          ).text(),
+        };
+      }
+
+      return {
+        format: "plist",
+        content: await (await fetch("/languages/TypeScript.tmLanguage")).text(),
+      };
+    },
+  });
 
   const liftOff = async (editor: any, monaco: Monaco) => {
     const grammars = new Map();
 
     monaco.languages.register({ id: "javascript" });
     monaco.languages.register({ id: "typescript" });
+    monaco.languages.register({ id: "html" });
+    monaco.languages.register({ id: "css" });
 
     grammars.set("javascript", "source.js");
     grammars.set("typescript", "source.ts");
+    grammars.set("html", "source.html");
+    grammars.set("css", "source.css");
 
     monaco.editor.defineTheme("vs-code-theme-converted", {
       inherit: true,
@@ -505,10 +518,10 @@ function CodeEditor(props: ICodeEditorProps) {
       encodedTokensColors: [],
     });
 
-    await wireTmGrammars(monaco, registry, grammars, editor);
     setTimeout(async () => {
-      console.log(editor);
-    }, 1);
+      await wireTmGrammars(monaco, registry, grammars, editor);
+    }, 11);
+    editor._themeService.setTheme("vs-code-theme-converted");
   };
 
   const editorOnMount = (editor: any, monaco: Monaco) => {
@@ -519,21 +532,33 @@ function CodeEditor(props: ICodeEditorProps) {
   };
 
   const editorOnChange = (value: string | undefined, event: any) => {
-    console.log(value);
+    if (props.socket) {
+      const socket = props.socket;
+
+      socket.emit(
+        "fileInput",
+        JSON.stringify({
+          request: "update",
+          name: props.currentFile,
+          content: value || "blank_file",
+        })
+      );
+
+      props.updateFile(value || "");
+    }
   };
 
   return (
-    <>
-      <Editor
-        className="overflow-hidden"
-        onMount={editorOnMount}
-        onChange={editorOnChange}
-        height="100%"
-        theme="vs-dark"
-        path={props.currentFile}
-        defaultValue={"Hello"}
-      />
-    </>
+    <Editor
+      className="overflow-hidden"
+      onMount={editorOnMount}
+      onChange={editorOnChange}
+      height="100%"
+      theme="vs-dark"
+      path={props.currentFile}
+      value={props.currentFileContent}
+      language={props.currentFileLanguage}
+    />
   );
 }
 

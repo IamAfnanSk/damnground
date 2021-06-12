@@ -1,97 +1,241 @@
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import { config } from "../../config/config";
 import styles from "./styles.module.scss";
 
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
 import SideBar from "../../components/SideBar/SideBar";
 
-import { io, Socket } from "socket.io-client";
-import { useEffect } from "react";
-import { useState } from "react";
-import SocketContext from "../../contexts/SocketContext";
 import Terminal from "../../components/Terminal/Terminal";
 import CodeOutput from "../../components/CodeOutput/CodeOutput";
 import CodeEditor from "../../components/CodeEditor/CodeEditor";
+import Footer from "../../components/Footer/Footer";
+import { IFilesAndFolders } from "../../interfaces/IFilesAndFolders";
 
 function Home() {
-  const [socket, setSocket] = useState<Socket>(io());
-  const [currentFile, setCurrentFile] = useState("index.html");
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [appDomain, setAppDomain] = useState<string | null>(null);
+  const [filesAndFolders, setFilesAndFolders] = useState<IFilesAndFolders[]>(
+    []
+  );
+
+  const [currentFile, setCurrentFile] = useState<string>("");
+  const [currentFileContent, setCurrentFileContent] = useState<string>("");
+  const [currentFileLanguage, setCurrentFileLanguage] = useState<string>("");
 
   useEffect(() => {
-    // call api to create new container
-    // from res create socket io client
-    const socket = io("damner.dns.codedamn.afnanshaikh.com");
-    setSocket(socket);
+    const baseSocket = io(config.baseSocketURI);
+
+    baseSocket.on("response", (data: string) => {
+      const response = JSON.parse(data);
+      const { appDomain, apiDomain } = response;
+      const mainSocket = io(apiDomain);
+      setSocket(mainSocket);
+      setAppDomain(appDomain);
+    });
+
+    baseSocket.emit("request", "create");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function changeCurrentFile(data: any) {
-    setCurrentFile(data.name);
+  useEffect(() => {
+    function saveSnippetToserverAndSetIdToLocalstorage() {
+      socket!.on("fileOutputWithContent", (data: string) => {
+        const parsed = JSON.parse(data);
+        const fAndFolders = parsed.filesAndFolders;
+
+        setFilesAndFolders(fAndFolders);
+
+        fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
+          method: "post",
+          body: JSON.stringify({
+            files: fAndFolders,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            localStorage.setItem("snippetId", data.snippetId);
+          })
+          .catch((error) => console.log(error));
+      });
+
+      socket!.emit("fileInput", JSON.stringify({ request: "lswithcontent" }));
+    }
+
+    function getAndUpdateFilesAndFolders(snippetId: string) {
+      fetch(`${config.baseApiURI}/api/v1/snippet/get`, {
+        method: "post",
+        body: JSON.stringify({
+          snippetId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then(({ data }) => {
+          const files = data.files;
+
+          files.forEach((file: any) => {
+            if (file.type === "file") {
+              socket!.emit(
+                "fileInput",
+                JSON.stringify({
+                  name: file.name,
+                  content: file.content,
+                  request: "update",
+                })
+              );
+            }
+          });
+
+          setFilesAndFolders(files);
+        })
+        .catch((error) => console.log(error));
+    }
+
+    if (socket) {
+      const snippetIdLocal = localStorage.getItem("snippetId");
+
+      if (snippetIdLocal) {
+        getAndUpdateFilesAndFolders(snippetIdLocal);
+      } else {
+        saveSnippetToserverAndSetIdToLocalstorage();
+      }
+
+      socket.on("fileOutputWithContent", (data) => {
+        console.log(data);
+
+        const parsed = JSON.parse(data);
+        const fAndFolders = parsed.filesAndFolders;
+
+        setFilesAndFolders(fAndFolders);
+
+        fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
+          method: "post",
+          body: JSON.stringify({
+            files: fAndFolders,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            localStorage.setItem("snippetId", data.snippetId);
+          })
+          .catch((error) => console.log(error));
+      });
+
+      socket.on("fileOutput", () => {
+        socket.emit(
+          "fileInput",
+          JSON.stringify({
+            request: "lswithcontent",
+          })
+        );
+      });
+    }
+  }, [socket]);
+
+  function updateCurrentFile(file: string) {
+    const currFile = filesAndFolders.find((f) => {
+      return f.name === file;
+    });
+
+    if (currFile) {
+      setCurrentFile(file);
+
+      const splitted = file.split(".");
+      const extension = splitted[splitted.length - 1];
+
+      setCurrentFileContent(currFile.content);
+
+      switch (extension) {
+        case "js":
+          setCurrentFileLanguage("javascript");
+          break;
+        case "ts":
+          setCurrentFileLanguage("typescript");
+          break;
+        case "html":
+          setCurrentFileLanguage("html");
+          break;
+        case "css":
+          setCurrentFileLanguage("css");
+          break;
+        default:
+          setCurrentFileLanguage("typescript");
+          break;
+      }
+    }
+  }
+
+  function updateFile(value: string) {
+    const file = filesAndFolders.find((file) => file.name === currentFile);
+
+    if (file) {
+      file.content = value;
+    }
+  }
+
+  function addFile(file: any) {
+    const fAndFolders = filesAndFolders;
+    fAndFolders.push(file);
+
+    setFilesAndFolders(fAndFolders);
   }
 
   return (
     <div className={styles.windowContainer}>
       <ReflexContainer orientation="horizontal">
         <ReflexElement>
-          <SocketContext.Provider value={socket}>
-            <ReflexContainer orientation="vertical">
-              <ReflexElement minSize={50} flex={0.28}>
-                <SideBar changeCurrentFile={changeCurrentFile} />
-              </ReflexElement>
-
-              <ReflexSplitter />
-
-              <ReflexElement flex={0.65}>
-                <ReflexContainer orientation="horizontal">
-                  <ReflexElement flex={0.8}>
-                    <CodeEditor currentFile={currentFile}></CodeEditor>
-                  </ReflexElement>
-
-                  <ReflexSplitter />
-
-                  <ReflexElement
-                    className={styles.terminalContainer}
-                    minSize={80}
-                    maxSize={730}
-                    flex={0.2}
-                  >
-                    <Terminal></Terminal>
-                  </ReflexElement>
-                </ReflexContainer>
-              </ReflexElement>
-
-              <ReflexSplitter />
-
-              <ReflexElement flex={0.5}>
-                {/* TODO: Pass src */}
-                <CodeOutput src="http://app.damner.dns.codedamn.afnanshaikh.com"></CodeOutput>
-              </ReflexElement>
-            </ReflexContainer>
-          </SocketContext.Provider>
-        </ReflexElement>
-
-        <ReflexSplitter />
-
-        <ReflexElement maxSize={60} minSize={60}>
-          <div className="px-6 py-1 flex items-center justify-between">
-            <div>
-              <p>
-                After so much backend work, I had no time to fix memory leaks
-                and improvments 😞 but <b>something is better than nothing</b>{" "}
-                👍
-              </p>
-              <p>
-                😍
-                <b> Features Implemented:</b> Multiple resizable windows,
-                Textmate grammers, Real CLI, Multi file monaco editor, Real
-                output, File management, File listing, File saving to DB, etc.
-              </p>
-            </div>
-            <div>
-              <img
-                src="/assets/logo.jpg"
-                className="w-10"
-                alt="Afnan Shaikh's Logo"
+          <ReflexContainer orientation="vertical">
+            <ReflexElement minSize={50} flex={0.28}>
+              <SideBar
+                addFile={addFile}
+                updateCurrentFile={updateCurrentFile}
+                socket={socket}
               />
-            </div>
-          </div>
+            </ReflexElement>
+            <ReflexSplitter />
+            <ReflexElement flex={0.65}>
+              <ReflexContainer orientation="horizontal">
+                <ReflexElement flex={0.8}>
+                  {currentFile && (
+                    <CodeEditor
+                      updateFile={updateFile}
+                      socket={socket}
+                      currentFileContent={currentFileContent}
+                      currentFileLanguage={currentFileLanguage}
+                      currentFile={currentFile}
+                    ></CodeEditor>
+                  )}
+                </ReflexElement>
+                <ReflexSplitter />
+                <ReflexElement
+                  className={styles.terminalContainer}
+                  minSize={80}
+                  maxSize={730}
+                  flex={0.2}
+                >
+                  <Terminal socket={socket}></Terminal>
+                </ReflexElement>
+              </ReflexContainer>
+            </ReflexElement>
+            <ReflexSplitter />
+            <ReflexElement flex={0.5}>
+              <CodeOutput src={appDomain}></CodeOutput>
+            </ReflexElement>
+          </ReflexContainer>
+        </ReflexElement>
+        <ReflexSplitter />
+        <ReflexElement maxSize={60} minSize={60}>
+          <Footer></Footer>
         </ReflexElement>
       </ReflexContainer>
     </div>

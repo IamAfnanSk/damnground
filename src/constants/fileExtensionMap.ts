@@ -1,4 +1,4 @@
-import { IFileExtensionMap } from "../types/IFileExtensionMap";
+import { IFileExtensionMap } from "../interfaces/IFileExtensionMap";
 
 export const fileExtensionMap: IFileExtensionMap = {
   js: "javascript",

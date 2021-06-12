@@ -1,22 +1,9 @@
-import { useContext } from "react";
 import { useRef } from "react";
-import SocketContext from "../../contexts/SocketContext";
 
 function CodeOutput(props: any) {
   const codeOutputRef = useRef<HTMLIFrameElement>(null);
-  const socket = useContext(SocketContext);
-
-  socket.on("fileOutput", () => {
-    if (codeOutputRef.current) {
-      codeOutputRef.current.src = props.src;
-    }
-  });
-
   return (
     <div className="h-full w-full bg-white">
-      <h3 className="bg-yellow-900 py-2 px-6 rounded-md absolute bottom-2">
-        Type 'static-server' in terminal and reload this frame, <b>please</b>
-      </h3>
       <iframe
         ref={codeOutputRef}
         className="w-full h-full"
