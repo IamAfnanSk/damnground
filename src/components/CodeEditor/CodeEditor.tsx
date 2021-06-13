@@ -566,12 +566,15 @@ function CodeEditor(props: ICodeEditorProps) {
         grammars.set("typescript", "source.ts");
         grammars.set("html", "source.html");
         grammars.set("css", "source.css");
-        await wireTmGrammars(
-          monacoRef.current,
-          registry,
-          grammars,
-          editorRef.current
-        );
+
+        setTimeout(async () => {
+          await wireTmGrammars(
+            monacoRef.current!,
+            registry,
+            grammars,
+            editorRef.current
+          );
+        }, 1);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps

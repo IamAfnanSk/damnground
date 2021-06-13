@@ -3,6 +3,7 @@ import { ICodeOutpuProps } from "../../interfaces/ICodeOutpuProps";
 
 function CodeOutput(props: ICodeOutpuProps) {
   const codeOutputRef = useRef<HTMLIFrameElement>(null);
+
   return (
     <div className="h-full w-full bg-white">
       <iframe

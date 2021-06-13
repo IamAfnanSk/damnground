@@ -36,10 +36,13 @@ function Home() {
 
     baseSocket.on("response", (data: string) => {
       const response = JSON.parse(data);
-      const { appDomain, apiDomain } = response;
-      const mainSocket = io(apiDomain);
+
+      const appD = response.appDomain;
+      const apiD = response.apiDomain;
+
+      const mainSocket = io(apiD);
       setSocket(mainSocket);
-      setAppDomain(appDomain);
+      setAppDomain(appD);
     });
 
     baseSocket.emit("request", "create");
@@ -49,10 +52,15 @@ function Home() {
 
   useEffect(() => {
     if (socket) {
-      const snippetIdLocal = params.id;
+      const snippetIdParam = params.id;
+      const snippetIdLocal = localStorage.getItem("snippetId");
 
-      if (snippetIdLocal) {
+      if (snippetIdLocal && !snippetIdParam) {
+        history.push(`/${snippetIdLocal}`);
+      } else if (snippetIdLocal && snippetIdParam) {
         getAndUpdateFilesAndFolders(snippetIdLocal);
+      } else if (snippetIdParam) {
+        getAndUpdateFilesAndFolders(snippetIdParam);
       } else {
         saveSnippetToserverAndSetIdToLocalstorage();
       }
@@ -60,23 +68,7 @@ function Home() {
       socket.on("fileOutputWithContent", (data) => {
         const parsed = JSON.parse(data);
         const fAndFolders = parsed.filesAndFolders;
-
         setFilesAndFolders(fAndFolders);
-
-        fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
-          method: "post",
-          body: JSON.stringify({
-            files: fAndFolders,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            history.push(`/${data.snippetId}`);
-          })
-          .catch((error) => {});
       });
 
       socket.on("fileOutput", () => {
@@ -90,6 +82,27 @@ function Home() {
     }
 
     function saveSnippetToserverAndSetIdToLocalstorage() {
+      socket!.once("fileOutputWithContent", (data) => {
+        const parsed = JSON.parse(data);
+        const fAndFolders = parsed.filesAndFolders;
+
+        fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
+          method: "post",
+          body: JSON.stringify({
+            files: fAndFolders,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            localStorage.setItem("snippetId", data.snippetId);
+            history.push(`/${data.snippetId}`);
+          })
+          .catch((error) => {});
+      });
+
       socket!.emit("fileInput", JSON.stringify({ request: "lswithcontent" }));
     }
 
