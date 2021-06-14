@@ -55,10 +55,8 @@ function Home() {
       const snippetIdParam = params.id;
       const snippetIdLocal = localStorage.getItem("snippetId");
 
-      if (snippetIdLocal && !snippetIdParam) {
-        history.push(`/${snippetIdLocal}`);
-      } else if (snippetIdLocal && snippetIdParam) {
-        getAndUpdateFilesAndFolders(snippetIdLocal);
+      if (snippetIdLocal && snippetIdParam) {
+        getAndUpdateFilesAndFolders(snippetIdParam);
       } else if (snippetIdParam) {
         getAndUpdateFilesAndFolders(snippetIdParam);
       } else if (snippetIdLocal) {
@@ -75,7 +73,7 @@ function Home() {
         const snippetIdParam = params.id;
         const snippetIdLocal = localStorage.getItem("snippetId");
 
-        if (snippetIdParam || snippetIdLocal) {
+        if (snippetIdParam && snippetIdLocal) {
           fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
             method: "post",
             body: JSON.stringify({
