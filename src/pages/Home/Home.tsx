@@ -61,6 +61,8 @@ function Home() {
         getAndUpdateFilesAndFolders(snippetIdLocal);
       } else if (snippetIdParam) {
         getAndUpdateFilesAndFolders(snippetIdParam);
+      } else if (snippetIdLocal) {
+        getAndUpdateFilesAndFolders(snippetIdLocal);
       } else {
         saveSnippetToserverAndSetIdToLocalstorage();
       }
@@ -69,6 +71,22 @@ function Home() {
         const parsed = JSON.parse(data);
         const fAndFolders = parsed.filesAndFolders;
         setFilesAndFolders(fAndFolders);
+
+        const snippetIdParam = params.id;
+        const snippetIdLocal = localStorage.getItem("snippetId");
+
+        if (snippetIdParam || snippetIdLocal) {
+          fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
+            method: "post",
+            body: JSON.stringify({
+              files: fAndFolders,
+              snippetId: snippetIdParam || snippetIdLocal,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }).catch((error) => {});
+        }
       });
 
       socket.on("fileOutput", () => {
@@ -117,23 +135,33 @@ function Home() {
         },
       })
         .then((res) => res.json())
-        .then(({ data }) => {
-          const files = data.files;
+        .then((response) => {
+          const data = response.data;
+          const success = response.success;
 
-          files.forEach((file: any) => {
-            if (file.type === "file") {
-              socket!.emit(
-                "fileInput",
-                JSON.stringify({
-                  name: file.name,
-                  content: file.content,
-                  request: "update",
-                })
-              );
-            }
-          });
+          if (success) {
+            const files = data.files;
 
-          setFilesAndFolders(files);
+            files.forEach((file: any) => {
+              if (file.type === "file") {
+                socket!.emit(
+                  "fileInput",
+                  JSON.stringify({
+                    name: file.name,
+                    content: file.content,
+                    request: "update",
+                  })
+                );
+              }
+            });
+
+            setFilesAndFolders(files);
+          } else if (
+            response.message === "Snippet doesn't exist with this Id"
+          ) {
+            localStorage.removeItem("snippetId");
+            window.location.pathname = "/";
+          }
         })
         .catch((error) => {});
     }
