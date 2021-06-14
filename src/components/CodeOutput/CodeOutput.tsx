@@ -8,10 +8,13 @@ function CodeOutput(props: ICodeOutpuProps) {
     <div className="h-full w-full bg-white">
       <iframe
         key={props.iFrameKey}
+        name={props.iFrameKey.toString()}
         ref={codeOutputRef}
         className="w-full h-full"
         title="Output"
-        src={props.src}
+        src={
+          props.src ? `${props.src}?cacheBurst=${props.iFrameKey}` : undefined
+        }
         frameBorder="0"
       ></iframe>
     </div>
