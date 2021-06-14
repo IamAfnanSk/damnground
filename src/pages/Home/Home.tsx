@@ -73,7 +73,7 @@ function Home() {
         const snippetIdParam = params.id;
         const snippetIdLocal = localStorage.getItem("snippetId");
 
-        if (snippetIdParam && snippetIdLocal) {
+        if (snippetIdParam || snippetIdLocal) {
           fetch(`${config.baseApiURI}/api/v1/snippet/save`, {
             method: "post",
             body: JSON.stringify({
