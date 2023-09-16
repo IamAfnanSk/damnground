@@ -44,8 +44,8 @@ const SideBar = ({
             onClick={() => setCurrentSection("about")}
           >
             <img
-              src="https://codedamn.com/_next/image?url=%2Fassets%2Fimages%2Fwhite-logo.png&w=32&q=75"
-              alt="Codedamn logo"
+              src="https://www.afnan.dev/_vercel/image?url=/images/logo.svg&w=1536&q=100"
+              alt="logo"
               className="h-12 mx-auto px-1 py-1"
             />
           </div>
