@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="150px" src="https://yt3.ggpht.com/ytc/AAUvwnjJzxp8COuChc2Iccn41G1sBr9DRbFpR3jeo9shvw=s900-c-k-c0x00ffffff-no-rj"/>
+  <img width="150px" src="https://www.afnan.dev/_vercel/image?url=/images/logo.svg&w=1536&q=100"/>
     <h1>Damnground</h1>
 
   <p>An online code playground for fun.</p>
