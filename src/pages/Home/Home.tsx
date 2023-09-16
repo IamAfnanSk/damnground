@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { io, Socket } from "socket.io-client";
 import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import styles from "./styles.module.scss";
 
@@ -17,7 +17,6 @@ import Footer from "../../components/Footer/Footer";
 import { IFileFolders } from "../../interfaces/IFileFolders";
 
 function Home() {
-  const navigate = useNavigate();
   const params = useParams();
 
   const snippetIdParam = useRef<string | null>(
@@ -138,7 +137,7 @@ function Home() {
           localStorage.setItem("snippetId", snippetId);
 
           if (snippetIdParam.current !== snippetId) {
-            navigate(`/${snippetId}`);
+            window.location.pathname = `/${snippetId}`;
           }
         }
       });
