@@ -40,6 +40,10 @@ function Home() {
     abortController: AbortController
   ) {
     try {
+      if (!snippetIdParam.current) {
+        return;
+      }
+
       const snippetResponse = await axios.post(
         `${config.baseApiURI}/api/v1/snippet/get`,
         {
@@ -80,6 +84,9 @@ function Home() {
       }
     } catch (error) {
       console.log(error);
+
+      localStorage.removeItem("snippetId");
+      window.location.pathname = "/";
     }
   }
 
