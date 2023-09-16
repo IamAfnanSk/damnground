@@ -1,64 +1,36 @@
-import { useRef } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { fileExtensionMap } from "../../constants/fileExtensionMap";
-import { IFileFolders } from "../../interfaces/IFileFolders";
 import { ISideBarProps } from "../../interfaces/ISideBarProps";
 
 import styles from "./styles.module.scss";
 
-const SideBar = (props: ISideBarProps) => {
-  const [option, setOption] = useState("files");
-  const [filesAndFolders, setFilesAndFolders] = useState<IFileFolders[]>([]);
+const SideBar = ({
+  containerSocket,
+  setCurrentFilePath,
+  filesAndFolders,
+}: ISideBarProps) => {
+  const [currentSection, setCurrentSection] = useState<"files" | "about">(
+    "files"
+  );
+
   const [addingNewFile, setAddingNewFile] = useState(false);
 
-  const addFileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const socket = props.socket;
-
-    function lsEventHandler(data: string) {
-      const response = JSON.parse(data);
-      const { filesAndFolders } = response;
-
-      if (filesAndFolders) {
-        setFilesAndFolders(filesAndFolders);
-      }
-    }
-
-    if (socket) {
-      socket.off("fileOutput", lsEventHandler).on("fileOutput", lsEventHandler);
-      socket.on("fileWatcher", (data: string) => {
-        const response = JSON.parse(data);
-        const { filesAndFolders } = response;
-
-        if (filesAndFolders) {
-          setFilesAndFolders(filesAndFolders);
-        }
-      });
-
-      socket.emit("fileInput", JSON.stringify({ request: "ls" }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.socket]);
+  const [newFileName, setNewFileName] = useState<string | null>(null);
 
   function deleteFile(name: string) {
-    props.socket?.emit(
+    containerSocket?.emit(
       "fileInput",
       JSON.stringify({ request: "delete", name })
     );
   }
 
-  function addFile() {
-    props.socket?.emit(
+  function handleAddFile() {
+    containerSocket?.emit(
       "fileInput",
-      JSON.stringify({ request: "touch", name: addFileInputRef.current?.value })
+      JSON.stringify({ request: "touch", name: newFileName })
     );
+    setNewFileName(null);
     setAddingNewFile(false);
-    props.addFile({
-      name: addFileInputRef.current?.value,
-      content: "",
-      type: "file",
-    });
   }
 
   return (
@@ -67,9 +39,9 @@ const SideBar = (props: ISideBarProps) => {
         <div className={styles.sidebarOptions}>
           <div
             className={`${styles.option} ${
-              option === "about" ? styles.optionSelected : ""
+              currentSection === "about" ? styles.optionSelected : ""
             }`}
-            onClick={() => setOption("about")}
+            onClick={() => setCurrentSection("about")}
           >
             <img
               src="https://codedamn.com/_next/image?url=%2Fassets%2Fimages%2Fwhite-logo.png&w=32&q=75"
@@ -79,9 +51,9 @@ const SideBar = (props: ISideBarProps) => {
           </div>
           <div
             className={`${styles.option} ${
-              option === "files" ? styles.optionSelected : ""
+              currentSection === "files" ? styles.optionSelected : ""
             }`}
-            onClick={() => setOption("files")}
+            onClick={() => setCurrentSection("files")}
           >
             <div className={styles.icon + " codicon codicon-files"}></div>
           </div>
@@ -89,46 +61,54 @@ const SideBar = (props: ISideBarProps) => {
 
         <div className="flex-1">
           <div className={styles.sidebarContents}>
-            {option === "about" && (
+            {currentSection === "about" && (
               <div className="p-4">
-                <h2 className="text-xl font-bold">About coding ground</h2>
-                <p className="mt-3 font-light">
-                  This interface helps you code in browser and see the immediate
-                  output. Complete the challenges mentioned and proceed forward
-                  with the next ones!
+                <h2 className="font-bold">About coding ground</h2>
+                <p className="mt-3 text-sm font-light">
+                  Just a fun project where you can use actual terminal and files
+                  from the browser, try running `static-server` in the terminal
                 </p>
-                <p className="my-3 text-2xl">
+                <p className="my-3 text-lg">
                   Made by <b>Afnan Shaikh</b>
                 </p>
 
-                <a
-                  href="https://twitter.com/IamAfnanSk"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-green-300 block"
-                >
-                  @IamAfnanSk : Twitter
-                </a>
-                <a
-                  href="https://www.instagram.com/iamafnansk"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-green-300 block"
-                >
-                  @IamAfnanSk : Instagram
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/iamafnansk"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-green-300 block"
-                >
-                  @IamAfnanSk : LinkedIn
-                </a>
+                <div className="text-xs">
+                  <a
+                    href="https://afnan.dev?utm_source=damnground"
+                    referrerPolicy="no-referrer"
+                    target="_blank"
+                    className="text-green-300 block"
+                    rel="noreferrer"
+                  >
+                    afnan.dev
+                  </a>
+                </div>
+
+                <div className="mt-8 text-sm font-light">
+                  <span className="text-red-400">Limitation:</span>
+                  <ul className="list-disc flex flex-col gap-2 mt-2">
+                    <li>
+                      Currently the same server is assigned and it shares the
+                      terminal and files, idealy there should be a backend that
+                      assigns separate server to each user to keep things
+                      separate.
+                    </li>
+
+                    <li>
+                      Folders are not supported, only top level files are
+                      supported
+                    </li>
+
+                    <li>
+                      Made in very short time, expect bugs / unhandled edge
+                      cases
+                    </li>
+                  </ul>
+                </div>
               </div>
             )}
 
-            {option === "files" && (
+            {currentSection === "files" && (
               <>
                 <div
                   className={
@@ -141,9 +121,6 @@ const SideBar = (props: ISideBarProps) => {
                     className="codicon codicon-new-file cursor-pointer"
                     onClick={() => {
                       setAddingNewFile(true);
-                      setTimeout(() => {
-                        addFileInputRef.current?.focus();
-                      }, 1);
                     }}
                   ></div>
                 </div>
@@ -151,9 +128,9 @@ const SideBar = (props: ISideBarProps) => {
                 <div className="py-2 px-4">
                   {addingNewFile && (
                     <div
-                      onKeyPress={(event) => {
+                      onKeyUp={(event) => {
                         if (event.code === "Enter") {
-                          addFile();
+                          handleAddFile();
                         }
                       }}
                       className={
@@ -163,9 +140,9 @@ const SideBar = (props: ISideBarProps) => {
                     >
                       <div className="flex items-center flex-1">
                         <input
-                          ref={addFileInputRef}
                           type="text"
                           className="p-0 bg-transparent w-full"
+                          onChange={(e) => setNewFileName(e.target.value)}
                         />
                         {/* <p className="ml-1.5 text-sm"></p> */}
                       </div>
@@ -222,7 +199,7 @@ const SideBar = (props: ISideBarProps) => {
                         <div
                           className="flex items-center flex-1"
                           onClick={() => {
-                            props.updateCurrentFile(element.name);
+                            setCurrentFilePath(element.name);
                           }}
                         >
                           <img src={imageSrc} className="w-5" alt="file icon" />

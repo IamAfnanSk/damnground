@@ -1,6 +1,6 @@
 import { IConfig } from "../interfaces/IConfig";
 
 export const config: IConfig = {
-  baseSocketURI: "http://api.damnground.afnanshaikh.com",
-  baseApiURI: "http://api.damnground.afnanshaikh.com",
+  baseSocketURI: "https://api.damnbackend.afnan.dev",
+  baseApiURI: "https://api.damnbackend.afnan.dev",
 };

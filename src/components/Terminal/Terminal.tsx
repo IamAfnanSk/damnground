@@ -1,54 +1,61 @@
-import { useState } from "react";
 import { useEffect, useRef } from "react";
 import { Terminal as XTerminal } from "xterm";
 import { ITerminalProps } from "../../interfaces/ITerminalProps";
 
 import styles from "./styles.module.scss";
 
-function Terminal(props: ITerminalProps) {
+function Terminal({
+  editorRows,
+  refreshOutput,
+  containerSocket,
+}: ITerminalProps) {
   const terminalDivRef = useRef<HTMLDivElement>(null);
 
-  const [terminal] = useState(
+  const terminal = useRef(
     new XTerminal({
-      rows: props.editorRows,
+      rows: editorRows,
       cursorBlink: true,
+      theme: {
+        background: "#16191d",
+        foreground: "#F5F8FA",
+      },
     })
   );
 
-  terminal.setOption("theme", {
-    background: "#16191d",
-    foreground: "#F5F8FA",
-  });
+  useEffect(() => {
+    const onDataListerner = terminal.current.onData(() => {
+      refreshOutput(true);
+    });
 
-  terminal.onData(() => {
-    props.refreshOutput(true);
-  });
+    return () => {
+      onDataListerner.dispose();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    terminal.resize(60, props.editorRows);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.editorRows]);
+    terminal.current.resize(60, editorRows);
+  }, [editorRows]);
 
   useEffect(() => {
-    const socket = props.socket;
+    terminal.current.open(terminalDivRef.current!);
 
-    if (socket) {
-      terminal.open(terminalDivRef.current!);
+    containerSocket?.on("output", (data) => {
+      terminal.current.write(data);
+    });
 
-      socket.on("output", (data) => {
-        terminal.write(data);
-      });
+    const onDataListerner = terminal.current.onData((data) => {
+      containerSocket?.emit("input", data);
+    });
 
-      terminal.onData((data) => {
-        socket!.emit("input", data);
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.socket]);
+    return () => {
+      onDataListerner.dispose();
+    };
+  }, [containerSocket]);
 
   return (
     <div className={styles.terminal} ref={terminalDivRef}>
-      {!props.socket && "Connecting to server PLEASE WAIT 😉  ..."}
+      {!containerSocket && "Connecting to server PLEASE WAIT 😉  ..."}
     </div>
   );
 }

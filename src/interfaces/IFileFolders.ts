@@ -1,5 +1,6 @@
 export interface IFileFolders {
   name: string;
   type: "directory" | "file";
-  inside?: IFileFolders[];
+  content?: string;
+  inside?: IFileFolders[]; // single level support for now
 }

@@ -1,17 +1,22 @@
 import React from "react";
-import ReactDOM from "react-dom";
+
 import "./index.scss";
+
 import App from "./App";
 
 import { loadWASM } from "onigasm";
 
+import { createRoot } from "react-dom/client";
+
 (async () => {
   await loadWASM("/assets/onigasm.wasm");
 
-  ReactDOM.render(
+  const container = document.getElementById("root");
+  const root = createRoot(container!);
+
+  root.render(
     <React.StrictMode>
       <App />
-    </React.StrictMode>,
-    document.getElementById("root")
+    </React.StrictMode>
   );
 })();
