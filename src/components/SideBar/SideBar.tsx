@@ -44,9 +44,9 @@ const SideBar = ({
             onClick={() => setCurrentSection("about")}
           >
             <img
-              src="https://www.afnan.dev/_vercel/image?url=/images/logo.svg&w=1536&q=100"
+              src="https://www.afnan.dev/_vercel/image?url=/images/logo-dark.svg&w=1536&q=100"
               alt="logo"
-              className="h-12 mx-auto px-1 py-1"
+              className="h-6 mx-auto px-1 py-1"
             />
           </div>
           <div
