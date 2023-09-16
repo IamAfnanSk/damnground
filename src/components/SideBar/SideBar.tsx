@@ -46,7 +46,7 @@ const SideBar = ({
             <img
               src="https://www.afnan.dev/_vercel/image?url=/images/logo-dark.svg&w=1536&q=100"
               alt="logo"
-              className="h-6 py-2 mx-auto px-1"
+              className="h-10 py-2 mx-auto px-1"
             />
           </div>
           <div
