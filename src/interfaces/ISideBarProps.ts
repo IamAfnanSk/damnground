@@ -1,7 +1,8 @@
 import { Socket } from "socket.io-client";
+import { IFileFolders } from "./IFileFolders";
 
 export interface ISideBarProps {
-  socket: Socket | null;
-  updateCurrentFile: any;
-  addFile: any;
+  containerSocket: Socket | null;
+  filesAndFolders: IFileFolders[];
+  setCurrentFilePath: React.Dispatch<React.SetStateAction<string>>;
 }

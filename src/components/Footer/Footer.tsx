@@ -3,10 +3,6 @@ function Footer() {
     <div className="px-6 py-1 flex items-center justify-between">
       <div>
         <p>
-          Because implimenting too many features other than asked ones, I had no
-          time to optimize but atleast <b>i FINISHED it</b>🤣
-        </p>
-        <p>
           😍
           <b> Features Implemented:</b> Multiple resizable windows, Textmate
           grammers, Real CLI, Multi file monaco editor, Real output, File
@@ -14,11 +10,17 @@ function Footer() {
         </p>
       </div>
       <div>
-        <img
-          src="/assets/logo.jpg"
-          className="w-10"
-          alt="Afnan Shaikh's Logo"
-        />
+        <a
+          href="https://afnan.dev?utm_source=damnground"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            src="/assets/logo.jpg"
+            className="w-10"
+            alt="Afnan Shaikh's Logo"
+          />
+        </a>
       </div>
     </div>
   );
