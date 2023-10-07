@@ -6,9 +6,9 @@
 
 # Damnground
 
-### The frontend codebase of the damn project
+### The frontend codebase of the damnground project
 
-Damnground is the front end part of the project which uses [damnbasher](https://github.com/IamAfnanSk/damnbasher) and [damnbackend](https://github.com/IamAfnanSk/damnbackend) and basically this is all the font end.
+This is the front-end part of the project which uses [damnbasher](https://github.com/IamAfnanSk/damnbasher) and [damnbackend](https://github.com/IamAfnanSk/damnbackend) and basically this is all the font end.
 
 ## Features
 
