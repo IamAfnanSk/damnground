@@ -23,7 +23,7 @@ function Terminal({
   );
 
   useEffect(() => {
-    refreshOutput(true, 5000);
+    refreshOutput(true, 10000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
