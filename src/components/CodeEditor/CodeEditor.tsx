@@ -839,6 +839,8 @@ function CodeEditor({
     let timeout: NodeJS.Timeout | null = null;
 
     const listener = editor.current.onDidChangeModelContent(() => {
+      if (timeout) clearTimeout(timeout);
+
       timeout = setTimeout(() => {
         const value = editor.current?.getValue() || "";
         const name = editor.current?.getModel()?.uri.path || "";
@@ -857,7 +859,7 @@ function CodeEditor({
         }
 
         refreshOutput(false);
-      }, 500);
+      }, 1000);
     });
 
     return () => {

@@ -23,13 +23,7 @@ function Terminal({
   );
 
   useEffect(() => {
-    const onDataListerner = terminal.current.onData(() => {
-      refreshOutput(true);
-    });
-
-    return () => {
-      onDataListerner.dispose();
-    };
+    refreshOutput(true, 5000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -4,6 +4,6 @@ import { IFileFolders } from "./IFileFolders";
 export interface ICodeEditorProps {
   currentFilePath: string;
   containerSocket: Socket | null;
-  refreshOutput(delay?: boolean): void;
+  refreshOutput(delay?: boolean, duration?: number): void;
   filesAndFoldersInitial: React.MutableRefObject<IFileFolders[]>;
 }

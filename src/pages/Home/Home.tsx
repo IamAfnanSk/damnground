@@ -201,7 +201,7 @@ function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [containerSocket]);
 
-  function refreshOutput(delay: boolean = false) {
+  function refreshOutput(delay: boolean = false, duration?: number) {
     if (refreshOutputTimer.current) {
       clearTimeout(refreshOutputTimer.current);
     }
@@ -209,7 +209,7 @@ function Home() {
     if (delay) {
       refreshOutputTimer.current = setTimeout(() => {
         setIFrameKey(Math.random());
-      }, 5000);
+      }, duration || 2000);
     } else {
       setIFrameKey(Math.random());
     }
