@@ -4,11 +4,7 @@ import { ITerminalProps } from "../../interfaces/ITerminalProps";
 
 import styles from "./styles.module.scss";
 
-function Terminal({
-  editorRows,
-  refreshOutput,
-  containerSocket,
-}: ITerminalProps) {
+function Terminal({ editorRows, containerSocket }: ITerminalProps) {
   const terminalDivRef = useRef<HTMLDivElement>(null);
 
   const terminal = useRef(
@@ -21,11 +17,6 @@ function Terminal({
       },
     })
   );
-
-  useEffect(() => {
-    refreshOutput(true, 10000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     terminal.current.resize(60, editorRows);

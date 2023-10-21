@@ -37,18 +37,12 @@ const SideBar = ({
     <>
       <div className="h-full flex">
         <div className={styles.sidebarOptions}>
-          <div
-            className={`${styles.option} ${
-              currentSection === "about" ? styles.optionSelected : ""
-            }`}
-            onClick={() => setCurrentSection("about")}
-          >
-            <img
-              src="https://www.afnan.dev/_vercel/image?url=/images/logo-dark.svg&w=1536&q=100"
-              alt="logo"
-              className="h-10 py-2 mx-auto px-1"
-            />
-          </div>
+          <img
+            src="https://www.afnan.dev/_vercel/image?url=/images/logo-dark.svg&w=1536&q=100"
+            alt="logo"
+            className="h-10 py-2 mx-auto px-1"
+          />
+
           <div
             className={`${styles.option} ${
               currentSection === "files" ? styles.optionSelected : ""
@@ -56,6 +50,14 @@ const SideBar = ({
             onClick={() => setCurrentSection("files")}
           >
             <div className={styles.icon + " codicon codicon-files"}></div>
+          </div>
+          <div
+            className={`${styles.option} ${
+              currentSection === "about" ? styles.optionSelected : ""
+            }`}
+            onClick={() => setCurrentSection("about")}
+          >
+            <div className={styles.icon + " codicon codicon-info"}></div>
           </div>
         </div>
 
@@ -66,7 +68,7 @@ const SideBar = ({
                 <h2 className="font-bold">About coding ground</h2>
                 <p className="mt-3 text-sm font-light">
                   Just a fun project where you can use actual terminal and files
-                  from the browser, try running `static-server` in the terminal
+                  from the browser.
                 </p>
                 <p className="my-3 text-lg">
                   Made by <b>Afnan Shaikh</b>
@@ -85,13 +87,14 @@ const SideBar = ({
                 </div>
 
                 <div className="mt-8 text-sm font-light">
-                  <span className="text-red-400">Limitation:</span>
+                  <span className="text-red-400">Limitations!</span>
                   <ul className="list-disc flex flex-col gap-2 mt-2">
                     <li>
-                      Currently the same server is assigned and it shares the
-                      terminal and files, idealy there should be a backend that
-                      assigns separate server to each user to keep things
-                      separate.
+                      Currently the same server is assigned to everyone due to
+                      which only 1 person can use it at a time without problems
+                      (like port already in use, messed files, etc), idealy
+                      there should be a backend that assigns separate server
+                      container to each user to keep things separate.
                     </li>
 
                     <li>
@@ -100,7 +103,7 @@ const SideBar = ({
                     </li>
 
                     <li>
-                      Made in very short time, expect bugs / unhandled edge
+                      Made in very very short time, expect bugs / unhandled edge
                       cases
                     </li>
                   </ul>

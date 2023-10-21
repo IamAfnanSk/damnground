@@ -32,7 +32,7 @@ function Home() {
   const [filesAndFolders, setFilesAndFolders] = useState<IFileFolders[]>([]);
   const [appDomain, setAppDomain] = useState<string>();
   const [iFrameKey, setIFrameKey] = useState(Math.random());
-  const [editorRows, setEditorRows] = useState(8);
+  const [editorRows, setEditorRows] = useState(12);
 
   async function getSnippetFromServerAndUpdateFilesAndFolders(
     socket: Socket,
@@ -133,6 +133,14 @@ function Home() {
           })
         );
 
+        setCurrentFilePath((currentFilePath) => {
+          if (!currentFilePath) {
+            return files[0].name;
+          }
+
+          return currentFilePath;
+        });
+
         if (snippetId) {
           localStorage.setItem("snippetId", snippetId);
 
@@ -220,7 +228,7 @@ function Home() {
       <ReflexContainer orientation="horizontal">
         <ReflexElement>
           <ReflexContainer orientation="vertical">
-            <ReflexElement minSize={50} flex={0.28}>
+            <ReflexElement minSize={320} flex={0.32}>
               <SideBar
                 setCurrentFilePath={setCurrentFilePath}
                 containerSocket={containerSocket}
@@ -243,9 +251,9 @@ function Home() {
                 <ReflexSplitter />
                 <ReflexElement
                   className={styles.terminalContainer}
-                  minSize={90}
+                  minSize={250}
                   maxSize={730}
-                  flex={0.2}
+                  flex={0.24}
                   onResize={(event) => {
                     const el = event.domElement as Element;
                     const rows = Math.floor(el.clientHeight / 18);
@@ -254,7 +262,6 @@ function Home() {
                 >
                   <Terminal
                     editorRows={editorRows}
-                    refreshOutput={refreshOutput}
                     containerSocket={containerSocket}
                   ></Terminal>
                 </ReflexElement>
@@ -262,12 +269,16 @@ function Home() {
             </ReflexElement>
             <ReflexSplitter />
             <ReflexElement flex={0.5}>
-              <CodeOutput iFrameKey={iFrameKey} src={appDomain}></CodeOutput>
+              <CodeOutput
+                setIFrameKey={setIFrameKey}
+                iFrameKey={iFrameKey}
+                src={appDomain}
+              ></CodeOutput>
             </ReflexElement>
           </ReflexContainer>
         </ReflexElement>
         <ReflexSplitter />
-        <ReflexElement maxSize={60} minSize={60}>
+        <ReflexElement maxSize={50} minSize={50}>
           <Footer></Footer>
         </ReflexElement>
       </ReflexContainer>
